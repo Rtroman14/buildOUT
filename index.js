@@ -37,10 +37,6 @@ const checkIfBidsPage = require("./src/checkIfBidsPage");
 
         let scrapedBids = await scrapeBids(page);
 
-        // close browser
-        await browser.close();
-        console.log("Browser closed");
-
         if (scrapedBids.length > 0) {
             console.log(`Scraped ${scrapedBids.length} bids`);
 
@@ -51,14 +47,30 @@ const checkIfBidsPage = require("./src/checkIfBidsPage");
 
             console.log(`There are ${newBids.length} new bids`);
 
-            // post to wix database
-            newBids.forEach(async (bid) => {
-                let bidToJson = JSON.stringify(bid);
+            if (newBids) {
+                const newBidsWithDescription = newBids.map(async (newBid) => {
+                    const { urlLink } = newBid;
+                    await page.goto(urlLink, { waitUntil: "networkidle2" });
+                    await page.waitFor(15000);
+                    const description = await getNewBidDescription(page);
+                    return {
+                        ...newBid,
+                        description,
+                    };
+                });
+                // post to wix database
+                newBidsWithDescription.forEach(async (bid) => {
+                    let bidToJson = JSON.stringify(bid);
 
-                await postWixBids(bidToJson);
-                console.log("Posted new bid to Wix Corvid");
-            });
+                    await postWixBids(bidToJson);
+                    console.log("Posted new bid to Wix Corvid");
+                });
+            }
         }
+
+        // close browser
+        await browser.close();
+        console.log("Browser closed");
     } catch (error) {
         console.log(`INDEX.JS ERROR --- ${error}`);
     }
