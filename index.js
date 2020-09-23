@@ -3,6 +3,7 @@ const scrapeBids = require("./src/scrapeBids");
 const { getWixBids, postWixBids } = require("./src/database/wixDatabase");
 const filterBids = require("./src/filterBids");
 const checkIfBidsPage = require("./src/checkIfBidsPage");
+const getNewBidDescription = require("./src/getNewBidDescription");
 
 (async () => {
     try {
@@ -48,23 +49,21 @@ const checkIfBidsPage = require("./src/checkIfBidsPage");
             console.log(`There are ${newBids.length} new bids`);
 
             if (newBids) {
-                const newBidsWithDescription = newBids.map(async (newBid) => {
+                for (let newBid of newBids) {
                     const { urlLink } = newBid;
                     await page.goto(urlLink, { waitUntil: "networkidle2" });
                     await page.waitFor(15000);
-                    const description = await getNewBidDescription(page);
-                    return {
-                        ...newBid,
-                        description,
-                    };
-                });
-                // post to wix database
-                newBidsWithDescription.forEach(async (bid) => {
-                    let bidToJson = JSON.stringify(bid);
+                    const projectDescription = await getNewBidDescription(page);
 
-                    await postWixBids(bidToJson);
-                    console.log("Posted new bid to Wix Corvid");
-                });
+                    const newBidWithDescription = {
+                        ...newBid,
+                        projectDescription,
+                    };
+
+                    // post to wix database
+                    const newBidToJson = JSON.stringify(newBidWithDescription);
+                    await postWixBids(newBidToJson);
+                }
             }
         }
 

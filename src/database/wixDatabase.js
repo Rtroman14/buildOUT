@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-let wixDatabase = "https://www.buildoutcalifornia.org/_functions/rfpData";
+const wixDatabase = "https://www.buildoutcalifornia.org/_functions/rfpData";
 
 module.exports = {
     async getWixBids() {
@@ -19,10 +19,27 @@ module.exports = {
         try {
             let res = await axios.post(wixDatabase, newBid);
 
-            console.log(`Status code: ${res.status}`);
             console.log(`Status text: ${res.statusText}`);
+
+            if (res.statusText === "Created") {
+                console.log("Posted new bid to Wix Corvid");
+            } else {
+                console.log("Couldn't post new bid to Wix Corvid");
+            }
         } catch (error) {
             console.log("ERROR POSTING WIX DATABASE ---", error);
+        }
+    },
+
+    async deleteWixBids(id) {
+        try {
+            const bidUrl = `${wixDatabase}/${id}`;
+
+            await axios.delete(bidUrl);
+
+            console.log("Deleted bid");
+        } catch (error) {
+            console.log("ERROR DELETING WIX DATABASE BID ---", error);
         }
     },
 };
