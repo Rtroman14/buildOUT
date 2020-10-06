@@ -4,6 +4,7 @@ const { getWixBids, postWixBids } = require("./src/database/wixDatabase");
 const filterBids = require("./src/filterBids");
 const checkIfBidsPage = require("./src/checkIfBidsPage");
 const getNewBidDescription = require("./src/getNewBidDescription");
+const removeOutdatedBids = require("./src/removeOutdatedBids");
 
 (async () => {
     try {
@@ -66,6 +67,8 @@ const getNewBidDescription = require("./src/getNewBidDescription");
                 }
             }
         }
+
+        await removeOutdatedBids();
 
         // close browser
         await browser.close();

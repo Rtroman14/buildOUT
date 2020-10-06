@@ -19,13 +19,7 @@ module.exports = {
         try {
             let res = await axios.post(wixDatabase, newBid);
 
-            console.log(`Status text: ${res.statusText}`);
-
-            if (res.statusText === "Created") {
-                console.log("Posted new bid to Wix Corvid");
-            } else {
-                console.log("Couldn't post new bid to Wix Corvid");
-            }
+            console.log(`Posted new bid to Wix Corvid status: ${res.statusText}`);
         } catch (error) {
             console.log("ERROR POSTING WIX DATABASE ---", error);
         }
@@ -35,9 +29,9 @@ module.exports = {
         try {
             const bidUrl = `${wixDatabase}/${id}`;
 
-            await axios.delete(bidUrl);
+            let res = await axios.delete(bidUrl);
 
-            console.log("Deleted bid");
+            console.log(`Deleted outdated bid status: ${res.statusText}`);
         } catch (error) {
             console.log("ERROR DELETING WIX DATABASE BID ---", error);
         }
