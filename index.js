@@ -6,10 +6,17 @@ const checkIfBidsPage = require("./src/checkIfBidsPage");
 const getNewBidDescription = require("./src/getNewBidDescription");
 const removeOutdatedBids = require("./src/removeOutdatedBids");
 
+let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
+
+// exports.buildOut = async (req, res) => {
 (async () => {
     try {
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
+        // const browser = await puppeteer.launch({ headless: true });
+        const browser = await browserPromise;
+
+        const context = await browser.createIncognitoBrowserContext();
+        const page = await context.newPage();
+        // const page = await browser.newPage();
         await page.setViewport({ width: 1366, height: 768 });
 
         // robot detection incognito - console.log(navigator.userAgent);
@@ -71,9 +78,11 @@ const removeOutdatedBids = require("./src/removeOutdatedBids");
         await removeOutdatedBids();
 
         // close browser
-        await browser.close();
+        // await browser.close();
+        await context.close();
         console.log("Browser closed");
     } catch (error) {
         console.log(`INDEX.JS ERROR --- ${error}`);
     }
 })();
+// };
