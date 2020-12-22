@@ -1,3 +1,5 @@
+const slackNotification = require("./src/slackNotification");
+
 const keywords = require("../keyWords");
 const departments = require("../src/departments");
 
@@ -40,5 +42,8 @@ module.exports = async (page) => {
         return scrapedBids;
     } catch (error) {
         console.log("SCRAPEBIDS ERROR ---", error);
+
+        // notify me about this in Slack
+        await slackNotification("scrapeBids.js Error. Add more departments.");
     }
 };

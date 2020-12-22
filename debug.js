@@ -1,4 +1,6 @@
-module.exports = [
+// -------------- ID IS UNDEFINDED --------------//
+
+let departments = [
     { id: "1700", name: "Dept. Fair Employment & Housg" },
     { id: "5180", name: "Department of Social Services" },
     { id: "6511", name: "UC Davis Medical Center" },
@@ -91,3 +93,26 @@ module.exports = [
     { id: "0559", name: "Sec., Labor/Workforce Develop" },
     { id: "4170", name: "Department of Aging" },
 ];
+
+let bids = [];
+
+let tableRowsSelector = "#datatable-ready > tbody > tr";
+let tableRows = document.querySelectorAll(tableRowsSelector);
+
+for (let tableRow of tableRows) {
+    let bid = {};
+    let eventName = tableRow.querySelector(".bold").innerText;
+
+    if (true) {
+        let tableCols = tableRow.querySelectorAll("td");
+        let bidId = tableCols[1].innerText;
+        bid.title = eventName;
+        bid.category = "TRANSPORTATION";
+        bid.agencyName = tableCols[3].innerText;
+        bid.rfpDueDate = tableCols[4].innerText;
+        let [department] = departments.filter((dept) => dept.name === bid.agencyName);
+        let deptId = department.id;
+        bid.urlLink = `https://www.caleprocure.ca.gov/event/${deptId}/${bidId}`;
+        bids.push(bid);
+    }
+}
