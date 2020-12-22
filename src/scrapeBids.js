@@ -1,4 +1,4 @@
-const slackNotification = require("./src/slackNotification");
+const slackNotification = require("./slackNotification");
 
 const keywords = require("../keyWords");
 const departments = require("../src/departments");
