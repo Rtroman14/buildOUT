@@ -10,9 +10,8 @@ const removeOutdatedBids = require("./src/removeOutdatedBids");
 
 let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
 
-exports.buildOut = async (req, res) => {
-    res.send("Scraping Bids");
-    // (async () => {
+// exports.buildOut = async (req, res) => {
+(async () => {
     try {
         // const browser = await puppeteer.launch({ headless: true });
         const browser = await browserPromise;
@@ -89,12 +88,14 @@ exports.buildOut = async (req, res) => {
         await context.close();
         console.log("Browser closed");
 
-        res.end();
+        // res.send("Scraping Bids");
+
+        // res.end();
     } catch (error) {
         console.log(`INDEX.JS ERROR --- ${error}`);
 
         // notify me about this in Slack
         await slackNotification("buildOut.js Error. Add more departments.");
     }
-    // })();
-};
+})();
+// };

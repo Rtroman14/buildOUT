@@ -12,6 +12,7 @@ module.exports = {
             return data;
         } catch (error) {
             console.log("ERROR GETTING WIX DATABASE ---", error);
+            return [];
         }
     },
 
