@@ -64,10 +64,10 @@ const newBids = [
 ];
 
 (async () => {
-    await postWixBids(newBids[0]);
+    // await postWixBids(newBids[0]);
     // let bids = await getWixBids();
     // console.log(bids);
     // await deleteWixBids(newBidId);
     // await removeOutdatedBids();
-    // slackNotification("hello world");
+    slackNotification("hello world");
 })();
