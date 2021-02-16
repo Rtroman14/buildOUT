@@ -4,21 +4,14 @@ const slackNotification = require("./src/slackNotification");
 const scrapeBids = require("./src/scrapeBids");
 const { getWixBids, postWixBids } = require("./src/database/wixDatabase");
 const filterBids = require("./src/filterBids");
-const checkIfBidsPage = require("./src/checkIfBidsPage");
 const getNewBidDescription = require("./src/getNewBidDescription");
 const removeOutdatedBids = require("./src/removeOutdatedBids");
-
-let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
 
 exports.buildOut = async (req, res) => {
     // (async () => {
     try {
-        // const browser = await puppeteer.launch({ headless: true });
-        const browser = await browserPromise;
-
-        const context = await browser.createIncognitoBrowserContext();
-        const page = await context.newPage();
-        // const page = await browser.newPage();
+        const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"] });
+        const page = await browser.newPage();
         await page.setViewport({ width: 1366, height: 768 });
 
         // robot detection incognito - console.log(navigator.userAgent);
@@ -26,22 +19,16 @@ exports.buildOut = async (req, res) => {
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
         );
 
-        let website = "https://www.caleprocure.ca.gov/pages/public-search.aspx";
+        let website = "https://caleprocure.ca.gov/pages/Events-BS3/event-search.aspx";
 
         try {
             // navigate to website
             await page.goto(website, { waitUntil: "networkidle2" });
-            let seeBids = "div.row.padding-vertical-lg > div:nth-child(3) > a";
-            await page.waitForSelector(seeBids);
-            await page.click(seeBids);
-
             let elementAtBottom =
-                "#searchForm > div:nth-child(5) > div:nth-child(6) > div > div:nth-child(1) > div";
+                "#searchForm > section:nth-child(2) > div:nth-child(5) > div > div:nth-child(1)";
             await page.waitForSelector(elementAtBottom);
-            await page.waitFor(15000);
+            await page.waitFor(20000);
             console.log("Page loaded...");
-
-            await checkIfBidsPage(page);
         } catch (error) {
             console.log("ERROR NAVIGATING TO WEBSITE ---", error);
         }
@@ -84,13 +71,12 @@ exports.buildOut = async (req, res) => {
         await removeOutdatedBids();
 
         // close browser
-        // await browser.close();
-        await context.close();
+        await browser.close();
         console.log("Browser closed");
 
-        // res.send("Scraping Bids");
+        res.send("Scraping Bids");
 
-        // res.end();
+        res.end();
     } catch (error) {
         console.log(`INDEX.JS ERROR --- ${error}`);
 
