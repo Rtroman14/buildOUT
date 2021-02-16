@@ -7,11 +7,18 @@ const filterBids = require("./src/filterBids");
 const getNewBidDescription = require("./src/getNewBidDescription");
 const removeOutdatedBids = require("./src/removeOutdatedBids");
 
+let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
+
 exports.buildOut = async (req, res) => {
     // (async () => {
     try {
-        const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
-        const page = await browser.newPage();
+        // const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
+        // const page = await browser.newPage();
+
+        const browser = await browserPromise;
+        const context = await browser.createIncognitoBrowserContext();
+        const page = await context.newPage();
+
         await page.setViewport({ width: 1366, height: 768 });
 
         // robot detection incognito - console.log(navigator.userAgent);
@@ -71,17 +78,18 @@ exports.buildOut = async (req, res) => {
         await removeOutdatedBids();
 
         // close browser
-        await browser.close();
+        // await browser.close();
+        await context.close();
         console.log("Browser closed");
 
-        res.send("Scraping Bids");
-
-        res.end();
+        res.status(200).send("Scraped Bids");
     } catch (error) {
+        res.status(500).send(error);
+
         console.log(`INDEX.JS ERROR --- ${error}`);
 
         // notify me about this in Slack
-        await slackNotification("buildOut.js Error. Add more departments.");
+        await slackNotification("buildOut.js Error ---", error);
     }
     // })();
 };
