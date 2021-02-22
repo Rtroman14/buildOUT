@@ -102,4 +102,10 @@ module.exports = [
     { id: "6830", name: "CSU, Sonoma" },
     { id: "0559", name: "Sec., Labor/Workforce Develop" },
     { id: "4170", name: "Department of Aging" },
+    { id: "0845", name: "Department of Insurance" },
+    { id: "0954", name: "Scholarshare Investment Board" },
+    { id: "3100", name: "Exposition Park" },
+    { id: "4100", name: "Developmental Disabilities" },
+    { id: "6200", name: "CA School for the Blind" },
+    { id: "6250", name: "School for the Deaf-Riverside" },
 ];

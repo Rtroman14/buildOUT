@@ -57,7 +57,7 @@ exports.buildOut = async (req, res) => {
                     for (let newBid of newBids) {
                         const { urlLink } = newBid;
                         await page.goto(urlLink, { waitUntil: "networkidle2" });
-                        await page.waitFor(18000);
+                        await page.waitFor(20000);
                         const projectDescription = await getNewBidDescription(page);
 
                         const newBidWithDescription = {
