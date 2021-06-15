@@ -21,7 +21,7 @@ module.exports = async (page) => {
                         let tableCols = tableRow.querySelectorAll("td");
                         let bidId = tableCols[1].innerText;
                         bid.title = eventName;
-                        bid.category = "TRANSPORTATION";
+                        // bid.category = "TRANSPORTATION";
                         bid.agencyName = tableCols[3].innerText;
                         bid.rfpDueDate = tableCols[4].innerText;
                         let [department] = departments.filter(

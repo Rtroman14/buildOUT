@@ -125,6 +125,8 @@ let departments = [
     { id: "8855", name: "CA State Auditor's Office" },
     { id: "6650", name: "CSU, Bakersfield" },
     { id: "954", name: "Scholarshare Investment Board" },
+    { id: "8780", name: `"Little Hoover" Commission` },
+    { id: "6760", name: "CSU, Northridge" },
 ];
 
 let bids = [];
