@@ -1,11 +1,11 @@
+require("dotenv").config();
+
 const axios = require("axios");
 
-const wixDatabase = "https://www.buildoutcalifornia.org/_functions/rfpData";
-
 module.exports = {
-    async getWixBids() {
+    async getWixBids(database) {
         try {
-            let res = await axios.get(wixDatabase);
+            let res = await axios.get(`${process.env.URL_QUERY}/${database}`);
 
             let data = res.data.bids;
             console.log("Queried Wix Corvid");
@@ -16,9 +16,9 @@ module.exports = {
         }
     },
 
-    async postWixBids(newBid) {
+    async postWixBids(database, newBid) {
         try {
-            let res = await axios.post(wixDatabase, newBid);
+            const res = await axios.post(`${process.env.URL_QUERY}/${database}`, newBid);
 
             console.log(`Posted new bid to Wix Corvid status: ${res.statusText}`);
         } catch (error) {
@@ -26,9 +26,9 @@ module.exports = {
         }
     },
 
-    async deleteWixBids(id) {
+    async deleteWixBids(database, id) {
         try {
-            const bidUrl = `${wixDatabase}/${id}`;
+            const bidUrl = `${process.env.URL_QUERY}/${database}/${id}`;
 
             let res = await axios.delete(bidUrl);
 

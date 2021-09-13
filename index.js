@@ -47,7 +47,7 @@ exports.buildOut = async (req, res) => {
                 console.log(`Scraped ${scrapedBids.length} bids`);
 
                 // get wix database
-                let wixBids = await getWixBids();
+                let wixBids = await getWixBids(process.env.DATABASE);
 
                 let newBids = filterBids(scrapedBids, wixBids);
 
@@ -67,7 +67,7 @@ exports.buildOut = async (req, res) => {
 
                         // post to wix database
                         const newBidToJson = JSON.stringify(newBidWithDescription);
-                        await postWixBids(newBidToJson);
+                        await postWixBids(process.env.DATABASE, newBidToJson);
                     }
                 }
             }
@@ -75,7 +75,7 @@ exports.buildOut = async (req, res) => {
             console.log("PARSING SCRAPED BIDS ERROR ---", error);
         }
 
-        await removeOutdatedBids();
+        await removeOutdatedBids(process.env.DATABASE);
 
         // close browser
         // await browser.close();
