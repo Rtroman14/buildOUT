@@ -9,8 +9,8 @@ const removeOutdatedBids = require("./src/removeOutdatedBids");
 
 let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
 
-// exports.buildOut = async (req, res) => {
-(async () => {
+exports.buildOut = async (req, res) => {
+    // (async () => {
     try {
         // const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
         // const page = await browser.newPage();
@@ -91,5 +91,5 @@ let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] }
         // notify me about this in Slack
         await slackNotification("buildOut.js Error ---", error);
     }
-})();
-// };
+    // })();
+};
