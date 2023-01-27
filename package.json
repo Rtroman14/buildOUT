@@ -4,13 +4,13 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "functions-framework --target=buildOut"
+        "start": "npx functions-framework --target=buildout [--signature-type=http]"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@google-cloud/functions-framework": "^1.8.0",
+        "@google-cloud/functions-framework": "^3.1.3",
         "axios": "^0.21.1",
         "csv-parse": "^4.16.0",
         "dotenv": "^8.6.0",

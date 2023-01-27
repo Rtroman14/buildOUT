@@ -44,6 +44,6 @@ module.exports = async (page) => {
         console.log("SCRAPEBIDS ERROR ---", error);
 
         // notify me about this in Slack
-        await slackNotification("scrapeBids.js Error. Add more departments.");
+        await slackNotification("BuildOut", "scrapeBids.js Error. Add more departments.");
     }
 };

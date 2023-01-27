@@ -1,19 +1,18 @@
 const puppeteer = require("puppeteer");
 
+const functions = require("@google-cloud/functions-framework");
+
 const slackNotification = require("./src/slackNotification");
 const scrapeBids = require("./src/scrapeBids");
-const { getWixBids, postWixBids } = require("./src/database/wixDatabase");
+const Wix = require("./src/Wix");
 const filterBids = require("./src/filterBids");
 const getNewBidDescription = require("./src/getNewBidDescription");
-const removeOutdatedBids = require("./src/removeOutdatedBids");
 
 let browserPromise = puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
 
-exports.buildOut = async (req, res) => {
-    // (async () => {
+functions.http("buildout", async (req, res) => {
     try {
-        // const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
-        // const page = await browser.newPage();
+        await Wix.removeOutdatedBids(process.env.DATABASE);
 
         const browser = await browserPromise;
         const context = await browser.createIncognitoBrowserContext();
@@ -47,7 +46,7 @@ exports.buildOut = async (req, res) => {
                 console.log(`Scraped ${scrapedBids.length} bids`);
 
                 // get wix database
-                let wixBids = await getWixBids(process.env.DATABASE);
+                let wixBids = await Wix.getWixBids(process.env.DATABASE);
 
                 let newBids = filterBids(scrapedBids, wixBids);
 
@@ -67,15 +66,13 @@ exports.buildOut = async (req, res) => {
 
                         // post to wix database
                         const newBidToJson = JSON.stringify(newBidWithDescription);
-                        await postWixBids(process.env.DATABASE, newBidToJson);
+                        await Wix.postWixBids(process.env.DATABASE, newBidToJson);
                     }
                 }
             }
         } catch (error) {
             console.log("PARSING SCRAPED BIDS ERROR ---", error);
         }
-
-        await removeOutdatedBids(process.env.DATABASE);
 
         // close browser
         // await browser.close();
@@ -84,12 +81,11 @@ exports.buildOut = async (req, res) => {
 
         res.status(200).send("Scraped Bids");
     } catch (error) {
-        res.status(500).send(error);
-
         console.log(`INDEX.JS ERROR --- ${error}`);
 
         // notify me about this in Slack
-        await slackNotification("buildOut.js Error ---", error);
+        await slackNotification("BuildOut", `Error: ${error.message}`);
+
+        res.status(500).send(error);
     }
-    // })();
-};
+});
